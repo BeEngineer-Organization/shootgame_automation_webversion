@@ -1,0 +1,14 @@
+body, html {
+    height: 100%;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #10005f;
+  }
+  
+  canvas {
+    background-color: #000;
+    display: block;
+  }
+  
