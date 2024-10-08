@@ -27,13 +27,12 @@ let gameFrame = 0;
 // 追加
 let hit_flag = false
 
+// キーが入力された時、そのキーが押されたという情報を keys に記録する
+
 // スペースキーが押されたことをきっかけにして、
 // shootLaser（レーザーを発射するための実行）を実行する
 document.addEventListener('keydown', function (e) {
   keys[e.key] = true;
-  if (e.key === ' '){
-    shootLaser();
-  }
 });
 
 // キーが離されたことをきっかけに
@@ -59,6 +58,9 @@ function handlePlayerMovement() {
 
 // レーザーを発射する実行
 function shootLaser() {
+  if (e.key === ' '){
+    shootLaser();
+  }
   playerLasers.push({
     x: player.x + player.width / 2 - 2,
     y: player.y,
@@ -157,6 +159,13 @@ function animate() {
   
   // 次のゲーム実行を行う
   requestAnimationFrame(animate);
+
+
+
+
+  if (e.key === ' '){
+    shootLaser();
+  }
 }
 
 animate();
