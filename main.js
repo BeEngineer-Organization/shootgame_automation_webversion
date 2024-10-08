@@ -24,6 +24,9 @@ const enemies = [];
 const enemyLasers = [];
 let gameFrame = 0;
 
+// 追加
+let hit_flag = false
+
 // スペースキーが押されたことをきっかけにして、
 // shootLaser（レーザーを発射するための実行）を実行する
 document.addEventListener('keydown', function (e) {
@@ -42,11 +45,15 @@ document.addEventListener('keyup', function (e) {
 // 十字キーの左右が押されたことをきっかけにして、
 // プレイヤーを左右に移動させる
 function handlePlayerMovement() {
-  if (keys['ArrowLeft'] && player.x > 0) {
-    player.x -= player.speed;
-  }
-  if (keys['ArrowRight'] && player.x + player.width < canvas.width) {
-    player.x += player.speed;
+  if(enemies.length > 0){
+    // if (keys['ArrowLeft'] && player.x > 0) {
+    if(player.x > enemies[0].x){
+      player.x -= player.speed;
+    }
+    // if (keys['ArrowRight'] && player.x + player.width < canvas.width) {
+    if(player.x < enemies[0].x){
+      player.x += player.speed;
+    }
   }
 }
 
@@ -112,6 +119,7 @@ function checkCollisions() {
       ) {
         enemies.splice(enemyIndex, 1);
         playerLasers.splice(laserIndex, 1);
+        hit_flag = false
       }
     });
   });
@@ -139,6 +147,13 @@ function animate() {
   
   // ゲームの時間を進める
   gameFrame++;
+
+  if(enemies.length > 0){
+    if(player.x - enemies[0].x < 20 && player.x - enemies[0].x > -20 && hit_flag == false){
+      shootLaser();
+      hit_flag = true;
+    }
+  }
   
   // 次のゲーム実行を行う
   requestAnimationFrame(animate);
