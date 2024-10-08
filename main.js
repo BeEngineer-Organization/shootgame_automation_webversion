@@ -2,13 +2,22 @@
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 
+// ゲーム画面の大きさを指定
 canvas.width = 400;
 canvas.height = 800;
 
+// 画像の読み込み
 const player_image = new Image();
 player_image.src = 'images/player.png';
 const enemy_image = new Image();
 enemy_image.src = 'images/enemy.png';
+
+// 必要な値の用意
+const keys = [];
+const playerLasers = [];
+const enemies = [];
+const enemyLasers = [];
+let gameFrame = 0;
 
 const player = {
   x: canvas.width / 2,
@@ -17,12 +26,6 @@ const player = {
   height: 64,
   speed: 4,
 };
-
-const keys = [];
-const playerLasers = [];
-const enemies = [];
-const enemyLasers = [];
-let gameFrame = 0;
 
 // スペースキーが押されたことをきっかけにして、
 // shootLaser（レーザーを発射するための実行）を実行する
@@ -45,7 +48,8 @@ function handlePlayerMovement() {
   if (keys['ArrowLeft'] && player.x > 0) {
     player.x -= player.speed;
   }
-  if (keys['ArrowRight'] && player.x + player.width < canvas.width) {
+  if (keys['ArrowRight'] 
+      && player.x + player.width < canvas.width) {
     player.x += player.speed;
   }
 }
