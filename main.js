@@ -19,6 +19,7 @@ const enemies = [];
 const enemyLasers = [];
 let gameFrame = 0;
 
+// プレイヤーの設定
 const player = {
   x: canvas.width / 2,
   y: canvas.height - 100,
@@ -27,42 +28,40 @@ const player = {
   speed: 4,
 };
 
-// スペースキーが押されたことをきっかけにして、
-// shootLaser（レーザーを発射するための実行）を実行する
+// 入力されたキーを記録する
 document.addEventListener('keydown', function (e) {
   keys[e.key] = true;
-  if (e.key === ' '){
-    shootLaser();
-  }
 });
 
-// キーが離されたことをきっかけに
-// レーザーの発射を終了する
+// キーが離された時に離されたことを記録する
 document.addEventListener('keyup', function (e) {
   keys[e.key] = false;
 });
 
-// 十字キーの左右が押されたことをきっかけにして、
+// 十字キーの左右が押されたことをきっかけに
 // プレイヤーを左右に移動させる
 function handlePlayerMovement() {
   if (keys['ArrowLeft'] && player.x > 0) {
     player.x -= player.speed;
   }
-  if (keys['ArrowRight'] 
-      && player.x + player.width < canvas.width) {
+  if (keys['ArrowRight'] && player.x + player.width < canvas.width) {
     player.x += player.speed;
   }
 }
 
-// レーザーを発射する実行
+// スペースキーが押されたことをきっかけに
+// レーザーを発射する
 function shootLaser() {
-  playerLasers.push({
-    x: player.x + player.width / 2 - 2,
-    y: player.y,
-    width: 4,
-    height: 10,
-    speed: 4
-  });
+  if (keys[" "]){
+    playerLasers.push({
+      x: player.x + player.width / 2 - 2,
+      y: player.y,
+      width: 4,
+      height: 10,
+      speed: 4
+    });
+    keys[' '] = false;
+  }
 }
 
 // 指定された座標にプレイヤーを表示する
@@ -109,11 +108,11 @@ function checkCollisions() {
   playerLasers.forEach((laser, laserIndex) => {
     enemies.forEach((enemy, enemyIndex) => {
       if (
-        laser.x < enemy.x + enemy.width &&
-        laser.x + laser.width > enemy.x &&
-        laser.y < enemy.y + enemy.height &&
-        laser.y + laser.height > enemy.y
-      ) {
+        laser.x < enemy.x + enemy.width
+        && laser.x + laser.width > enemy.x
+        && laser.y < enemy.y + enemy.height
+        && laser.y + laser.height > enemy.y
+      ){
         enemies.splice(enemyIndex, 1);
         playerLasers.splice(laserIndex, 1);
       }
@@ -128,6 +127,9 @@ function animate() {
   
   // プレイヤーを動かす
   handlePlayerMovement();
+
+  // レーザーを発射する
+  shootLaser();
   
   // プレイヤーを表示する
   drawPlayer();
