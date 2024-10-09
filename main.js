@@ -2,14 +2,26 @@
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 
+// ゲーム画面の大きさを指定
 canvas.width = 400;
 canvas.height = 800;
 
+// 画像の読み込み
 const player_image = new Image();
 player_image.src = 'images/player.png';
 const enemy_image = new Image();
 enemy_image.src = 'images/enemy.png';
 
+// 必要な値の用意
+const keys = [];
+const playerLasers = [];
+const enemies = [];
+const enemyLasers = [];
+let gameFrame = 0;
+
+let shoot_flag = false;
+
+// プレイヤーの設定
 const player = {
   x: canvas.width / 2,
   y: canvas.height - 100,
@@ -18,30 +30,17 @@ const player = {
   speed: 4,
 };
 
-const keys = [];
-const playerLasers = [];
-const enemies = [];
-const enemyLasers = [];
-let gameFrame = 0;
-
-// 追加
-let hit_flag = false
-
-// キーが入力された時、そのキーが押されたという情報を keys に記録する
-
-// スペースキーが押されたことをきっかけにして、
-// shootLaser（レーザーを発射するための実行）を実行する
+// 入力されたキーを記録する
 document.addEventListener('keydown', function (e) {
   keys[e.key] = true;
 });
 
-// キーが離されたことをきっかけに
-// レーザーの発射を終了する
+// キーが離された時に離されたことを記録する
 document.addEventListener('keyup', function (e) {
   keys[e.key] = false;
 });
 
-// 十字キーの左右が押されたことをきっかけにして、
+// 十字キーの左右が押されたことをきっかけに
 // プレイヤーを左右に移動させる
 function handlePlayerMovement() {
   if(enemies.length > 0){
@@ -56,18 +55,38 @@ function handlePlayerMovement() {
   }
 }
 
-// レーザーを発射する実行
+// スペースキーが押されたことをきっかけに
+// レーザーを発射する
 function shootLaser() {
-  if (e.key === ' '){
-    shootLaser();
+  if(enemies.length > 0){
+    // if (keys[" "]){
+    if(player.x - enemies[0].x < 20 && player.x - enemies[0].x > -20){
+      playerLasers.push({
+        x: player.x + player.width / 2 - 2,
+        y: player.y,
+        width: 4,
+        height: 10,
+        speed: 4
+      });
+      keys[' '] = false;
+    }
   }
-  playerLasers.push({
-    x: player.x + player.width / 2 - 2,
-    y: player.y,
-    width: 4,
-    height: 10,
-    speed: 4
-  });
+}
+
+function shootLaser() {
+  if(enemies.length > 0){
+    if(player.x - enemies[0].x < 20 && player.x - enemies[0].x > -20 && shoot_flag == false){
+      playerLasers.push({
+        x: player.x + player.width / 2 - 2,
+        y: player.y,
+        width: 4,
+        height: 10,
+        speed: 4
+      });
+      keys[' '] = false;
+      shoot_flag = true;
+    }
+  }
 }
 
 // 指定された座標にプレイヤーを表示する
@@ -114,14 +133,14 @@ function checkCollisions() {
   playerLasers.forEach((laser, laserIndex) => {
     enemies.forEach((enemy, enemyIndex) => {
       if (
-        laser.x < enemy.x + enemy.width &&
-        laser.x + laser.width > enemy.x &&
-        laser.y < enemy.y + enemy.height &&
-        laser.y + laser.height > enemy.y
-      ) {
+        laser.x < enemy.x + enemy.width
+        && laser.x + laser.width > enemy.x
+        && laser.y < enemy.y + enemy.height
+        && laser.y + laser.height > enemy.y
+      ){
         enemies.splice(enemyIndex, 1);
         playerLasers.splice(laserIndex, 1);
-        hit_flag = false
+        shoot_flag = false;
       }
     });
   });
@@ -134,6 +153,9 @@ function animate() {
   
   // プレイヤーを動かす
   handlePlayerMovement();
+
+  // レーザーを発射する
+  shootLaser();
   
   // プレイヤーを表示する
   drawPlayer();
@@ -149,23 +171,9 @@ function animate() {
   
   // ゲームの時間を進める
   gameFrame++;
-
-  if(enemies.length > 0){
-    if(player.x - enemies[0].x < 20 && player.x - enemies[0].x > -20 && hit_flag == false){
-      shootLaser();
-      hit_flag = true;
-    }
-  }
   
   // 次のゲーム実行を行う
   requestAnimationFrame(animate);
-
-
-
-
-  if (e.key === ' '){
-    shootLaser();
-  }
 }
 
 animate();
