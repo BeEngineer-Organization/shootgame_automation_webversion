@@ -7,10 +7,10 @@ canvas.width = 400;
 canvas.height = 800;
 
 // 画像の読み込み
-const player_image = new Image();
-player_image.src = "images/player.png";
-const enemy_image = new Image();
-enemy_image.src = "images/enemy.png";
+const playerImage = new Image();
+playerImage.src = "images/player.png";
+const enemyImage = new Image();
+enemyImage.src = "images/enemy.png";
 
 // 必要な値の用意
 const keys = [];
@@ -95,7 +95,7 @@ function shootLaser() {
 
 // 指定された座標にプレイヤーを表示する
 function drawPlayer() {
-    ctx.drawImage(player_image, player.x, player.y);
+    ctx.drawImage(playerImage, player.x, player.y);
 }
 
 // 指定された場所にレーザーを表示する
@@ -123,7 +123,7 @@ function handleEnemies() {
         });
     }
     enemies.forEach((enemy, index) => {
-        ctx.drawImage(enemy_image, enemy.x, enemy.y);
+        ctx.drawImage(enemyImage, enemy.x, enemy.y);
         enemy.y += enemy.speed;
         if (enemy.y > canvas.height) {
             enemies.splice(index, 1);
